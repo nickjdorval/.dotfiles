@@ -1,0 +1,7 @@
+algo.txt
+dotfiles/other
+.DS_Store
+tags
+nvim/plugged/*
+nvim/undodir/*
+Brewfile.lock.json

@@ -1,0 +1,49 @@
+# -s flag checks that the file is > 0 bytesj
+[[ -s "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
+[[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
+
+function gpush() {
+  BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+  git push -u origin "${BRANCH}"
+}
+
+function pr()
+{
+  # hub pull-request -l "Needs Code Review,Needs Testing,#squad-insights" -o
+  hub pull-request -o
+}
+
+function compare() {
+  hub compare `git rev-parse --abbrev-ref HEAD`
+}
+
+function load_ssh_keys(){
+  eval "$(ssh-agent -s)" > /dev/null
+  if ! ssh-add -L > /dev/null; then
+    ssh-add -K $HOME/.ssh/personal_rsa &> /dev/null
+    ssh-add -K $HOME/.ssh/uscis_rsa &> /dev/null
+  fi
+}
+
+# Colorized man command
+man() {
+  env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    man "$@"
+}
+
+activate(){
+  if [ -d $(pwd)/VENV ]; then
+    source VENV/bin/activate
+  fi
+}
+
+load_ssh_keys
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
